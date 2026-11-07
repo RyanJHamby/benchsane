@@ -14,7 +14,10 @@ def sleeper(ms):
 
 
 def test_detects_injected_slowdown(tmp_path):
-    r, env = run_ab(sleeper(10), sleeper(30), runs=12, warmup=1, seed=1, out=str(tmp_path / "x"))
+    # Mechanism test, not a sensitivity test: the effect is large against Python's startup
+    # noise so a shared CI runner cannot hide it (10ms vs 30ms flaked on a macOS runner).
+    # How small an effect is detectable is measured by the M4 calibration runs.
+    r, env = run_ab(sleeper(20), sleeper(120), runs=12, warmup=1, seed=1, out=str(tmp_path / "x"))
     assert r["comparison"]["verdict"] == "slower"
     assert r["comparison"]["ratio"] > 1.2
     assert all(len(v) == 12 for v in r["samples"].values())
