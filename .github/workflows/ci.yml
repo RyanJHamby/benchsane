@@ -1,0 +1,55 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      # RELEASE GATE: pin both actions to full commit SHAs before the repo goes public
+      # (Dependabot keeps them current). Tags are mutable.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: pip install -e '.[dev,mcp]'
+      - run: pytest -q -rs
+      - name: doctor runs and emits valid JSON (exit 0 or 1 is fine; a crash is not)
+        shell: bash
+        run: |
+          set +e
+          benchsane doctor --json > doctor.json
+          code=$?
+          [ "$code" -le 1 ] || { echo "doctor crashed (exit $code)"; exit 1; }
+          python -c "import json; json.load(open('doctor.json'))"
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: build, check, and install the wheel into a clean venv
+        run: |
+          python -m pip install build twine
+          python -m build
+          twine check dist/*
+          python -m venv /tmp/clean
+          /tmp/clean/bin/pip install dist/*.whl
+          /tmp/clean/bin/benchsane kb search --tag linux | head -3
+          /tmp/clean/bin/benchsane schema result > /dev/null
