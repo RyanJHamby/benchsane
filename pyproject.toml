@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "benchsane"
+dynamic = ["version"]
+description = "Benchmarking knowledge base, preflight checks and sound A/B comparison for people and agents."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Ryan Hamby" }]
+keywords = ["benchmark", "performance", "measurement", "mcp"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: System :: Benchmark",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/RyanJHamby/benchsane"
+Issues = "https://github.com/RyanJHamby/benchsane/issues"
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.2,<3"]
+dev = ["pytest>=8", "jsonschema>=4", "rfc3339-validator"]
+
+[project.scripts]
+benchsane = "benchsane.cli:main"
+benchsane-mcp = "benchsane.mcp_server:main"
+
+# Single source of truth for the version: src/benchsane/__init__.py
+[tool.hatch.version]
+path = "src/benchsane/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/benchsane"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/docs", "/examples", "/action.yml", "/README.md", "/LICENSE", "/CHANGELOG.md", "/SECURITY.md", "/CONTRIBUTING.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
