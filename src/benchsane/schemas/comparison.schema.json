@@ -1,0 +1,244 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/RyanJHamby/benchsane/schemas/comparison.schema.json",
+ "title": "benchsane file comparison",
+ "type": "object",
+ "required": [
+  "schema",
+  "tool",
+  "created_at",
+  "baseline",
+  "candidate",
+  "metrics",
+  "comparison",
+  "claim",
+  "warnings"
+ ],
+ "properties": {
+  "schema": {
+   "const": "benchsane.comparison/v1"
+  },
+  "tool": {
+   "type": "string"
+  },
+  "created_at": {
+   "type": "string",
+   "format": "date-time"
+  },
+  "baseline": {
+   "type": "object",
+   "required": [
+    "source_format",
+    "summary"
+   ],
+   "properties": {
+    "summary": {
+     "type": "object",
+     "required": [
+      "n",
+      "median",
+      "mean",
+      "min",
+      "max",
+      "mad",
+      "cv"
+     ],
+     "properties": {
+      "median": {
+       "type": "number"
+      },
+      "mean": {
+       "type": "number"
+      },
+      "min": {
+       "type": "number"
+      },
+      "max": {
+       "type": "number"
+      },
+      "mad": {
+       "type": "number"
+      },
+      "cv": {
+       "type": "number"
+      },
+      "n": {
+       "type": "integer",
+       "minimum": 1
+      }
+     }
+    }
+   }
+  },
+  "candidate": {
+   "type": "object",
+   "required": [
+    "source_format",
+    "summary"
+   ],
+   "properties": {
+    "summary": {
+     "type": "object",
+     "required": [
+      "n",
+      "median",
+      "mean",
+      "min",
+      "max",
+      "mad",
+      "cv"
+     ],
+     "properties": {
+      "median": {
+       "type": "number"
+      },
+      "mean": {
+       "type": "number"
+      },
+      "min": {
+       "type": "number"
+      },
+      "max": {
+       "type": "number"
+      },
+      "mad": {
+       "type": "number"
+      },
+      "cv": {
+       "type": "number"
+      },
+      "n": {
+       "type": "integer",
+       "minimum": 1
+      }
+     }
+    }
+   }
+  },
+  "metrics": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "object",
+    "required": [
+     "unit",
+     "direction",
+     "description"
+    ],
+    "properties": {
+     "unit": {
+      "type": "string"
+     },
+     "direction": {
+      "enum": [
+       "lower_is_better",
+       "higher_is_better"
+      ]
+     },
+     "description": {
+      "type": "string"
+     }
+    }
+   }
+  },
+  "comparison": {
+   "type": "object",
+   "required": [
+    "metric",
+    "unit",
+    "direction",
+    "statistic",
+    "ratio",
+    "change_percent",
+    "ci",
+    "n_baseline",
+    "n_candidate",
+    "min_effect",
+    "verdict"
+   ],
+   "properties": {
+    "metric": {
+     "type": "string"
+    },
+    "unit": {
+     "type": "string"
+    },
+    "direction": {
+     "enum": [
+      "lower_is_better",
+      "higher_is_better"
+     ]
+    },
+    "statistic": {
+     "enum": [
+      "median_of_paired_ratios",
+      "ratio_of_medians"
+     ]
+    },
+    "ratio": {
+     "type": "number",
+     "exclusiveMinimum": 0
+    },
+    "change_percent": {
+     "type": "number"
+    },
+    "ci": {
+     "type": "object",
+     "required": [
+      "level",
+      "method",
+      "ratio_lower",
+      "ratio_upper",
+      "change_percent_lower",
+      "change_percent_upper"
+     ],
+     "properties": {
+      "level": {
+       "type": "number"
+      },
+      "method": {
+       "const": "percentile_bootstrap"
+      },
+      "ratio_lower": {
+       "type": "number"
+      },
+      "ratio_upper": {
+       "type": "number"
+      },
+      "change_percent_lower": {
+       "type": "number"
+      },
+      "change_percent_upper": {
+       "type": "number"
+      }
+     }
+    },
+    "n_baseline": {
+     "type": "integer"
+    },
+    "n_candidate": {
+     "type": "integer"
+    },
+    "min_effect": {
+     "type": "number"
+    },
+    "verdict": {
+     "enum": [
+      "faster",
+      "slower",
+      "no-detectable-difference",
+      "below-threshold"
+     ]
+    }
+   }
+  },
+  "claim": {
+   "type": "string"
+  },
+  "warnings": {
+   "type": "array",
+   "items": {
+    "type": "string"
+   }
+  }
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "https://github.com/RyanJHamby/benchsane/schemas/doctor.schema.json",
+ "title": "benchsane host report",
+ "type": "object",
+ "required": [
+  "schema",
+  "tool",
+  "created_at",
+  "grade",
+  "meaning",
+  "checks"
+ ],
+ "properties": {
+  "schema": {
+   "const": "benchsane.doctor/v1"
+  },
+  "tool": {
+   "type": "string"
+  },
+  "created_at": {
+   "type": "string",
+   "format": "date-time"
+  },
+  "grade": {
+   "enum": [
+    "clean",
+    "caveated",
+    "smoke"
+   ]
+  },
+  "meaning": {
+   "type": "string"
+  },
+  "checks": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "level",
+     "message"
+    ],
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "level": {
+      "enum": [
+       "ok",
+       "info",
+       "warn",
+       "fail"
+      ]
+     },
+     "message": {
+      "type": "string"
+     },
+     "fix": {
+      "type": "string"
+     },
+     "card": {
+      "type": "string"
+     }
+    }
+   }
+  }
+ }
+}
