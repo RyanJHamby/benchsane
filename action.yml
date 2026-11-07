@@ -1,0 +1,40 @@
+name: benchsane
+description: Compare benchmark results soundly and report whether the runner is fit to measure on.
+branding:
+  icon: activity
+  color: orange
+inputs:
+  baseline:
+    description: Baseline result file (hyperfine, Google Benchmark, pyperf or plain numbers)
+    required: true
+  candidate:
+    description: Candidate result file
+    required: true
+  min-effect:
+    description: Smallest effect that counts, as a fraction
+    default: "0.01"
+  fail-on-regression:
+    description: Fail the job if the candidate is slower
+    default: "false"
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: python3 -m pip install --quiet "$GITHUB_ACTION_PATH"
+    - shell: bash
+      env:
+        BASELINE: ${{ inputs.baseline }}
+        CANDIDATE: ${{ inputs.candidate }}
+        MIN_EFFECT: ${{ inputs.min-effect }}
+        FAIL: ${{ inputs.fail-on-regression }}
+      run: |
+        args=(compare "$BASELINE" "$CANDIDATE" --min-effect "$MIN_EFFECT")
+        [ "$FAIL" = "true" ] && args+=(--fail-on-regression)
+        set +e
+        out="$(benchsane "${args[@]}" 2>&1)"; rc=$?
+        doc="$(benchsane doctor 2>&1)"
+        set -e
+        { echo "## benchsane"; echo '```'; echo "$out"; echo '```';
+          echo "### Runner"; echo '```'; echo "$doc"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+        echo "$out"
+        exit "$rc"
