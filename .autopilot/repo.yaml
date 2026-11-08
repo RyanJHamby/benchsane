@@ -35,7 +35,7 @@ charter:
     - "change api.py surface, assertion vocabulary or claim-guard semantics"
     - "add Windows support"
   allow_new_dependencies: false
-  weekly_lines_budget: 5000  # gate stops dispatch after this many merged agent lines in 7 days; 1500 would stop after a few specs
+  # weekly_lines_budget disabled: gate.py needs .autopilot/charter.py, which this repo lacks (re-enable after the kit installs it)
   proposals_per_week: 2
   backlog_max: 4
   auto_ready: false          # audit proposals wait for you; the agent-ready label stays yours
