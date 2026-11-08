@@ -30,3 +30,7 @@ PRs #5-#9 merged, main CI green on the last merge. Filed issues #10-#13 (one per
 ## 2026-11-08 13:34 EST (at 8c13a3b)
 
 First agent run (issue #10, Sonnet medium) ended with 5 turns, ~9s, ~$0.06, no commits and no error; the empty branch was auto-deleted. Output is hidden unless AUTOPILOT_DEBUG=true, and the empty run used tier B's 1/day cap, so the debug rerun was gated. Did #10 by hand (PR #15, merged, main CI green incl. Linux and 3.10 cells). Cause of the silent exit is still unknown. #11 waits for the cap reset; set AUTOPILOT_DEBUG=true before it runs.
+
+## 2026-11-08 14:03 EST (at a262ab6)
+
+test_detects_injected_slowdown failed twice in CI on macOS cells (3.10 and 3.13) at 20ms vs 120ms, 12 runs: 'no-detectable-difference' where 'slower' was expected. Local: 0/25 failures on this idle Mac (one-off loop, not a pow run capture). Reading of stats.ratio_ci: the paired CI is a bootstrap of the median of 12 log-ratios, so about 3 inverted pairs flip the verdict. A model with synthetic stalls (not a runner measurement) put 20v120ms/12 runs at 4-11% failure for stall chance 20-30% per run, versus ~0-0.7% at 20v250ms/12 and ~0% at 24 runs. Changed the test to 20v250ms with 24 runs (about 8s locally). Not verified on the CI runner; judge by CI history. Whether ratio_ci should be more stall-robust is an open design question for M1/M4, not decided.

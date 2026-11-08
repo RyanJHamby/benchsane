@@ -15,12 +15,15 @@ def sleeper(ms):
 
 def test_detects_injected_slowdown(tmp_path):
     # Mechanism test, not a sensitivity test: the effect is large against Python's startup
-    # noise so a shared CI runner cannot hide it (10ms vs 30ms flaked on a macOS runner).
+    # noise so a shared CI runner cannot hide it. 10ms vs 30ms flaked on a macOS runner, and so did
+    # 20ms vs 120ms at 12 runs (twice in CI): the verdict is a bootstrap CI over the median of paired
+    # ratios, which flips to "no-detectable-difference" once about a quarter of the pairs are inverted
+    # by a runner stall longer than the gap. A wider gap and more blocks make that need far more stalls.
     # How small an effect is detectable is measured by the M4 calibration runs.
-    r, env = run_ab(sleeper(20), sleeper(120), runs=12, warmup=1, seed=1, out=str(tmp_path / "x"))
+    r, env = run_ab(sleeper(20), sleeper(250), runs=24, warmup=1, seed=1, out=str(tmp_path / "x"))
     assert r["comparison"]["verdict"] == "slower"
     assert r["comparison"]["ratio"] > 1.2
-    assert all(len(v) == 12 for v in r["samples"].values())
+    assert all(len(v) == 24 for v in r["samples"].values())
     assert {tuple(o) for o in r["order"]} == {("A", "B"), ("B", "A")}
     for name in ("samples.json", "env.json", "report.md"):
         assert os.path.exists(tmp_path / "x" / name)
