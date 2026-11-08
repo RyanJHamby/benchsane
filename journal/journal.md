@@ -26,3 +26,7 @@ Found by a planted-value check (not a pow run capture): capture() records RUSTFL
 ## 2026-11-08 12:54 EST (at b79a92c)
 
 PRs #5-#9 merged, main CI green on the last merge. Filed issues #10-#13 (one per spec) by hand after the auto-mode classifier blocked gh issue create from my session; created the four spec:* labels. Specs set to ready. No agent-ready labels yet; issue #4 (charter) still needs Ryan.
+
+## 2026-11-08 13:34 EST (at 8c13a3b)
+
+First agent run (issue #10, Sonnet medium) ended with 5 turns, ~9s, ~$0.06, no commits and no error; the empty branch was auto-deleted. Output is hidden unless AUTOPILOT_DEBUG=true, and the empty run used tier B's 1/day cap, so the debug rerun was gated. Did #10 by hand (PR #15, merged, main CI green incl. Linux and 3.10 cells). Cause of the silent exit is still unknown. #11 waits for the cap reset; set AUTOPILOT_DEBUG=true before it runs.
