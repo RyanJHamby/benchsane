@@ -61,7 +61,7 @@ Record capacity, speed, channels populated, ECC, huge pages and allocator. One D
 tags: hardware, memory, profiling
 status: unverified
 
-RSS isn't a total cost: use PSS for shared pages, peak for capacity, and track allocations per op for design work. `ru_maxrss` is KiB on Linux. On macOS it is widely reported as bytes, though Apple's man page says kilobytes; `benchsane ab` assumes bytes, so check this on your Mac. Cgroup accounting includes page cache. Allocators retain freed memory, and GC runtimes grow to fill the heap limit, so report heap settings.
+RSS isn't a total cost: use PSS for shared pages, peak for capacity, and track allocations per op for design work. `ru_maxrss` is KiB on Linux. On macOS it is bytes, though Apple's man page says kilobytes: observed on macOS 26.6.2 (arm64) by allocating about 200 MB in a child process, and `benchsane ab` relies on this. Other macOS versions and Intel Macs are not checked. Cgroup accounting includes page cache. Allocators retain freed memory, and GC runtimes grow to fill the heap limit, so report heap settings.
 
 ## storage.traps — Storage benchmarks measure the cache by default
 tags: hardware, storage
