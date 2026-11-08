@@ -13,6 +13,8 @@ non_goals:
 risk_tier: 2
 max_runs: 3
 autonomy: inherit
+status: ready
+issue: 11
 ---
 
 ## Context
@@ -32,3 +34,4 @@ Always run tests as `uv run --extra dev pytest ...`.
 
 ## Log
 - 2026-11-08 draft
+- 2026-11-08 ready, issue #11

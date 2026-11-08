@@ -22,3 +22,7 @@ Did not run pow init: it would write .github/, AGENTS.md, CLAUDE.md (protected b
 ## 2026-11-08 12:30 EST (at a6ceb90)
 
 Found by a planted-value check (not a pow run capture): capture() records RUSTFLAGS/CFLAGS/CXXFLAGS/LDFLAGS/JAVA_TOOL_OPTIONS verbatim, so paths and -Dpassword=... leak despite the 'no env values' docstring. Decision (Ryan): hash+length by default, include_flag_values=True to opt in. Spec privacy-env-hash-default drafted (tier 3); CLI flag and os.cmdline/doctor-details leaks are follow-ups.
+
+## 2026-11-08 12:54 EST (at b79a92c)
+
+PRs #5-#9 merged, main CI green on the last merge. Filed issues #10-#13 (one per spec) by hand after the auto-mode classifier blocked gh issue create from my session; created the four spec:* labels. Specs set to ready. No agent-ready labels yet; issue #4 (charter) still needs Ryan.
