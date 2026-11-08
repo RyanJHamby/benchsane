@@ -29,7 +29,7 @@ def _run_once(cmd, shell, env):
     err = p.stderr.read()
     _, status, ru = os.wait4(p.pid, 0)
     t1 = time.perf_counter_ns()
-    p.returncode = os.waitstatus_to_exitcode(status) if hasattr(os, "waitstatus_to_exitcode") else status >> 8
+    p.returncode = os.waitstatus_to_exitcode(status)
     p.stderr.close()
     if p.returncode != 0:
         raise RuntimeError(f"command exited {p.returncode}: {err.decode(errors='replace')[-500:]}")
@@ -40,6 +40,8 @@ def _run_once(cmd, shell, env):
 
 def run_ab(cmd_a, cmd_b=None, runs=30, warmup=2, seed=None, out=None, shell=False, env_pad=False, cpus=None,
            min_effect=0.01, redact=False, progress=None):
+    if not hasattr(os, "wait4"):
+        raise RuntimeError("benchsane ab is not supported on this platform (needs os.wait4)")
     aa = cmd_b is None
     cmd_b = cmd_a if aa else cmd_b
     names = ("A", "A2") if aa else ("A", "B")

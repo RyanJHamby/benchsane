@@ -9,7 +9,6 @@ PY = sys.executable
 CMD = f"{PY} -c 'pass'"
 
 
-@pytest.mark.xfail(strict=True, reason="spec ab-platform-guard: remove this marker when implemented")
 def test_run_ab_fails_fast_without_wait4(monkeypatch):
     # Platforms without os.wait4 (Windows) must get one clear error before any command runs,
     # not an AttributeError after warmup has already spawned processes.
