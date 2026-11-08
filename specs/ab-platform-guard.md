@@ -14,7 +14,7 @@ non_goals:
 risk_tier: 2
 max_runs: 3
 autonomy: inherit
-status: ready
+status: done
 issue: 10
 ---
 
@@ -36,3 +36,4 @@ Always run tests as `uv run --extra dev pytest ...`: plain `uv run pytest` does 
 ## Log
 - 2026-11-08 draft
 - 2026-11-08 ready, issue #10
+- 2026-11-08 done, PR #15 (implemented by hand after the agent run on #10 exited with no commits; main CI green on the merge)
