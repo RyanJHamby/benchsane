@@ -14,6 +14,8 @@ non_goals:
 risk_tier: 3
 max_runs: 3
 autonomy: inherit
+status: ready
+issue: 12
 ---
 
 ## Context
@@ -45,3 +47,4 @@ server's stderr log.
 
 ## Log
 - 2026-11-08 draft
+- 2026-11-08 ready, issue #12

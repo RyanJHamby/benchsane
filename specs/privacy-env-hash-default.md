@@ -15,6 +15,8 @@ non_goals:
 risk_tier: 3
 max_runs: 3
 autonomy: inherit
+status: ready
+issue: 13
 ---
 
 ## Context
@@ -41,3 +43,4 @@ Known and out of scope: `os.cmdline` (Linux `/proc/cmdline`) and the doctor `che
 
 ## Log
 - 2026-11-08 draft
+- 2026-11-08 ready, issue #13
