@@ -17,6 +17,25 @@ guard:
   extra_protected: []
   comms_allow: []           # path globs where messaging libs are legitimately part of the product
 
-# budget:                   # optional overrides of policy defaults
-#   runs_per_day: {A: 2, B: 1}
-#   max_turns: {standard: 40}
+budget:
+  runs_per_day: {B: 10}      # tier B default is 1; rolling 24h window
+  max_open_agent_prs: 6      # default 3; pick what you can review, every agent PR waits for you (merge-policy is empty)
+  # breaker_failures stays at the default 2: two failed runs in a row stop dispatch
+
+charter:
+  goals:
+    - {id: G1, text: "Correctness and safety of the existing runner, capture and compare code: fix bugs test-first, with no behaviour change beyond the bug"}
+    - {id: G2, text: "Privacy by default: manifests and results carry no hostnames, usernames, secrets or file-derived text unless the user opts in"}
+    - {id: G3, text: "Typed, frozen, documented result and env schemas with golden-file tests"}
+    - {id: G4, text: "Test and CI health on the Linux and Python 3.10 matrix cells"}
+  non_goals:
+    - "publish to PyPI or create a public release"
+    - "quote or add performance numbers"
+    - "mention autopilot, pow or pawl in the package, README or sdist"
+    - "change api.py surface, assertion vocabulary or claim-guard semantics"
+    - "add Windows support"
+  allow_new_dependencies: false
+  weekly_lines_budget: 5000  # gate stops dispatch after this many merged agent lines in 7 days; 1500 would stop after a few specs
+  proposals_per_week: 2
+  backlog_max: 4
+  auto_ready: false          # audit proposals wait for you; the agent-ready label stays yours
