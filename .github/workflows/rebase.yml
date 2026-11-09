@@ -1,0 +1,27 @@
+# autopilot-managed thin caller. Keeps open agent/* PRs up to date with the default branch.
+name: rebase
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "41 6 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: autopilot-rebase-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  rebase:
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: write
+    uses: RyanJHamby/autopilot/.github/workflows/rebase.yml@d036eece2a5db4b1792b4373e9e992479fa7a309
+    with:
+      kit_repo: RyanJHamby/autopilot
+      kit_ref: d036eece2a5db4b1792b4373e9e992479fa7a309

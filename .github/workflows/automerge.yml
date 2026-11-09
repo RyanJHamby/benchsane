@@ -1,0 +1,26 @@
+# autopilot-managed thin caller. Merges only PRs your .autopilot/merge-policy.yaml has opted in (ships empty = never).
+name: automerge
+
+on:
+  workflow_run:
+    workflows: ["guard", "ci", "test", "build"]
+    types: [completed]
+  schedule:
+    - cron: "17 */3 * * *"   # sweep: catches PRs whose last check finished after the guard run
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  automerge:
+    # Skipped jobs are not billed: only agent/ and dependabot/ runs can have anything to merge (the cron sweep covers the rest).
+    if: github.event_name != 'workflow_run' || startsWith(github.event.workflow_run.head_branch, 'agent/') || startsWith(github.event.workflow_run.head_branch, 'dependabot/')
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      checks: read
+    uses: RyanJHamby/autopilot/.github/workflows/automerge.yml@d036eece2a5db4b1792b4373e9e992479fa7a309
+    with:
+      kit_repo: RyanJHamby/autopilot
+      kit_ref: d036eece2a5db4b1792b4373e9e992479fa7a309
