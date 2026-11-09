@@ -25,14 +25,12 @@ def fake_affinity(monkeypatch):
     return state
 
 
-@pytest.mark.xfail(strict=True, reason="spec ab-restore-affinity: remove this marker when implemented")
 def test_affinity_restored_after_success(fake_affinity):
     run_ab(f"{PY} -c 'pass'", runs=1, warmup=0, seed=1, cpus={1})
     assert {1} in fake_affinity["calls"], "affinity was never applied"
     assert fake_affinity["cpus"] == {0, 1, 2, 3}
 
 
-@pytest.mark.xfail(strict=True, reason="spec ab-restore-affinity: remove this marker when implemented")
 def test_affinity_restored_after_failure(fake_affinity):
     with pytest.raises(RuntimeError, match="exited 3"):
         run_ab(f"{PY} -c 'import sys; sys.exit(3)'", runs=1, warmup=0, seed=1, cpus={1})
