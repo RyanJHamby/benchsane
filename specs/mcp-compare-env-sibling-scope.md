@@ -15,7 +15,8 @@ non_goals:
 risk_tier: 3
 max_runs: 3
 autonomy: inherit
-status: draft
+status: ready
+issue: 34
 ---
 
 ## Context
@@ -51,3 +52,4 @@ error text can contain file-derived strings on SDK 1.x.
 
 ## Log
 - 2026-11-09 draft
+- 2026-11-09 ready, issue #34
