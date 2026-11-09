@@ -13,7 +13,7 @@ non_goals:
 risk_tier: 2
 max_runs: 3
 autonomy: inherit
-status: ready
+status: done
 issue: 11
 ---
 
@@ -35,3 +35,4 @@ Always run tests as `uv run --extra dev pytest ...`.
 ## Log
 - 2026-11-08 draft
 - 2026-11-08 ready, issue #11
+- 2026-11-09 done, PR #25 (first agent-implemented spec; agent run 42650646060, guard and CI green, acceptance command 15 passed on merged main)
