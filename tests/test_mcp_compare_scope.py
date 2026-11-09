@@ -48,7 +48,6 @@ def dirs(tmp_path):
 GOOD = [1.0, 1.1, 0.9, 1.05, 0.95, 1.0]
 
 
-@pytest.mark.xfail(strict=True, reason="spec mcp-compare-read-scope: remove this marker when implemented")
 def test_absolute_path_outside_cwd_is_refused(dirs):
     work, outside = dirs
     ok = write(work / "a.txt", GOOD)
@@ -57,7 +56,6 @@ def test_absolute_path_outside_cwd_is_refused(dirs):
     assert is_error
 
 
-@pytest.mark.xfail(strict=True, reason="spec mcp-compare-read-scope: remove this marker when implemented")
 def test_dotdot_escape_is_refused(dirs):
     work, outside = dirs
     ok = write(work / "a.txt", GOOD)
@@ -66,7 +64,6 @@ def test_dotdot_escape_is_refused(dirs):
     assert is_error
 
 
-@pytest.mark.xfail(strict=True, reason="spec mcp-compare-read-scope: remove this marker when implemented")
 def test_symlink_escape_is_refused(dirs):
     work, outside = dirs
     ok = write(work / "a.txt", GOOD)
@@ -85,7 +82,6 @@ def test_paths_inside_cwd_still_work(dirs):
     assert not is_error and "verdict" in text
 
 
-@pytest.mark.xfail(strict=True, reason="spec mcp-compare-read-scope: remove this marker when implemented")
 def test_allowed_dirs_env_opens_an_extra_root(dirs):
     work, outside = dirs
     a = write(work / "a.txt", GOOD)
