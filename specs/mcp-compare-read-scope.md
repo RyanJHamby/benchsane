@@ -14,7 +14,7 @@ non_goals:
 risk_tier: 3
 max_runs: 3
 autonomy: inherit
-status: ready
+status: done
 issue: 12
 ---
 
@@ -48,3 +48,4 @@ server's stderr log.
 ## Log
 - 2026-11-08 draft
 - 2026-11-08 ready, issue #12
+- 2026-11-09 done, PR #30 (agent run 42656295599; guard and CI green; acceptance command 6 passed on merged main). Gap found in review: the sibling env.json is not scope-checked, so a symlinked env.json read a file outside the roots (reproduced); follow-up spec mcp-compare-env-sibling-scope.
