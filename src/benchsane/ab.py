@@ -40,6 +40,19 @@ def _run_once(cmd, shell, env):
 
 def run_ab(cmd_a, cmd_b=None, runs=30, warmup=2, seed=None, out=None, shell=False, env_pad=False, cpus=None,
            min_effect=0.01, redact=False, progress=None):
+    if not cpus:
+        return _run_ab(cmd_a, cmd_b, runs, warmup, seed, out, shell, env_pad, cpus, min_effect, redact, progress)
+    if not hasattr(os, "sched_setaffinity"):
+        raise RuntimeError("--cpus isn't supported on this platform")
+    original = os.sched_getaffinity(0)
+    os.sched_setaffinity(0, cpus)
+    try:
+        return _run_ab(cmd_a, cmd_b, runs, warmup, seed, out, shell, env_pad, cpus, min_effect, redact, progress)
+    finally:
+        os.sched_setaffinity(0, original)
+
+
+def _run_ab(cmd_a, cmd_b, runs, warmup, seed, out, shell, env_pad, cpus, min_effect, redact, progress):
     if not hasattr(os, "wait4"):
         raise RuntimeError("benchsane ab is not supported on this platform (needs os.wait4)")
     aa = cmd_b is None
@@ -47,10 +60,6 @@ def run_ab(cmd_a, cmd_b=None, runs=30, warmup=2, seed=None, out=None, shell=Fals
     names = ("A", "A2") if aa else ("A", "B")
     seed = seed if seed is not None else random.SystemRandom().randrange(2**31)
     rng = random.Random(seed)
-    if cpus:
-        if not hasattr(os, "sched_setaffinity"):
-            raise RuntimeError("--cpus isn't supported on this platform")
-        os.sched_setaffinity(0, cpus)
     parse = (lambda c: c) if shell else shlex.split
     argv = {names[0]: parse(cmd_a), names[1]: parse(cmd_b)}
     base_env = dict(os.environ)
