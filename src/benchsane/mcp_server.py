@@ -1,12 +1,30 @@
 """Thin, read-only MCP server over stdio. It can't run commands or change the system."""
 from __future__ import annotations
 
+import os
 import sys
 
 from . import capture as capture_mod
 from . import compare as compare_mod
 from . import doctor as doctor_mod
 from . import kb as kb_mod
+
+
+def _allowed_roots() -> list[str]:
+    roots = [os.path.realpath(os.getcwd())]
+    roots += [os.path.realpath(d) for d in os.environ.get("BENCHSANE_ALLOWED_DIRS", "").split(os.pathsep) if d]
+    return roots
+
+
+def _check_in_scope(path: str, roots: list[str]) -> None:
+    real = os.path.realpath(path)
+    for root in roots:
+        try:
+            if os.path.commonpath([real, root]) == root:
+                return
+        except ValueError:  # different drives
+            continue
+    raise ValueError(f"{path!r} is outside the allowed directories")
 
 
 def build():
@@ -45,7 +63,12 @@ def build():
     @server.tool()
     def compare(baseline_path: str, candidate_path: str, select_baseline: str | None = None,
                 select_candidate: str | None = None, min_effect: float = 0.01) -> dict:
-        """Compare two result files (hyperfine, Google Benchmark, pyperf, benchsane or plain numbers). Lower is assumed better."""
+        """Compare two result files (hyperfine, Google Benchmark, pyperf, benchsane or plain numbers). Lower is assumed better.
+        Only files inside the server's working directory or a directory listed in BENCHSANE_ALLOWED_DIRS
+        (os.pathsep-separated) are read; other paths are refused."""
+        roots = _allowed_roots()
+        _check_in_scope(baseline_path, roots)
+        _check_in_scope(candidate_path, roots)
         return compare_mod.compare(baseline_path, candidate_path, select_baseline, select_candidate, min_effect)
 
     return server
