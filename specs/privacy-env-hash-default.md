@@ -15,7 +15,7 @@ non_goals:
 risk_tier: 3
 max_runs: 3
 autonomy: inherit
-status: ready
+status: done
 issue: 13
 ---
 
@@ -44,3 +44,4 @@ Known and out of scope: `os.cmdline` (Linux `/proc/cmdline`) and the doctor `che
 ## Log
 - 2026-11-08 draft
 - 2026-11-08 ready, issue #13
+- 2026-11-09 done, PR #28 (agent run 42653533689; guard and CI green; acceptance command 18 passed on merged main). The agent also made `_first_line` drop "Picked up " lines, which the spec did not list: a JVM prints "Picked up JAVA_TOOL_OPTIONS: <value>" first, which would have echoed the unhashed value.
