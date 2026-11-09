@@ -65,10 +65,15 @@ def build():
                 select_candidate: str | None = None, min_effect: float = 0.01) -> dict:
         """Compare two result files (hyperfine, Google Benchmark, pyperf, benchsane or plain numbers). Lower is assumed better.
         Only files inside the server's working directory or a directory listed in BENCHSANE_ALLOWED_DIRS
-        (os.pathsep-separated) are read; other paths are refused."""
+        (os.pathsep-separated) are read; other paths are refused.
+        An env.json next to an input must also be inside the allowed directories."""
         roots = _allowed_roots()
         _check_in_scope(baseline_path, roots)
         _check_in_scope(candidate_path, roots)
+        for path in (baseline_path, candidate_path):
+            sibling = os.path.join(os.path.dirname(os.path.abspath(path)), "env.json")
+            if os.path.lexists(sibling):
+                _check_in_scope(sibling, roots)
         return compare_mod.compare(baseline_path, candidate_path, select_baseline, select_candidate, min_effect)
 
     return server

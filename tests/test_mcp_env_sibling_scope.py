@@ -45,7 +45,6 @@ def layout(tmp_path):
     return work, sub, outside
 
 
-@pytest.mark.xfail(strict=True, reason="spec mcp-compare-env-sibling-scope: remove this marker when implemented")
 def test_env_json_symlinked_outside_the_roots_is_refused(layout):
     work, sub, outside = layout
     (outside / "secret.json").write_text(json.dumps({"os": {"cmdline": SECRET}}))
