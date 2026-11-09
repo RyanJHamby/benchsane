@@ -15,7 +15,7 @@ non_goals:
 risk_tier: 3
 max_runs: 3
 autonomy: inherit
-status: ready
+status: done
 issue: 34
 ---
 
@@ -53,3 +53,4 @@ error text can contain file-derived strings on SDK 1.x.
 ## Log
 - 2026-11-09 draft
 - 2026-11-09 ready, issue #34
+- 2026-11-09 done, PR #36 (agent run 42696063299; guard and CI green; acceptance command 8 passed on merged main). Closes the sibling env.json gap found in review of PR #30.
