@@ -1,5 +1,6 @@
 """Environment manifest. Safe to commit: no hostname, username, env values or git remotes
-unless explicitly requested with an allowlisted variable."""
+unless explicitly requested with an allowlisted variable. Free-form flag variables
+(FREE_FORM_ENV) are recorded as a hash and length unless include_flag_values is true."""
 from __future__ import annotations
 
 import glob
@@ -21,6 +22,9 @@ TOOLCHAINS = {
 ENV_ALLOW = ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "GOMAXPROCS", "GOGC", "GOMEMLIMIT", "GOAMD64",
              "PYTHONHASHSEED", "CUDA_VISIBLE_DEVICES", "NODE_ENV", "MALLOC_ARENA_MAX", "RUSTFLAGS", "CFLAGS", "CXXFLAGS", "LDFLAGS", "JAVA_TOOL_OPTIONS")
 
+# Free-form text that can carry usernames, paths or secrets: hashed unless the caller opts in.
+FREE_FORM_ENV = ("RUSTFLAGS", "CFLAGS", "CXXFLAGS", "LDFLAGS", "JAVA_TOOL_OPTIONS")
+
 
 def _first_line(cmd):
     import subprocess
@@ -32,7 +36,9 @@ def _first_line(cmd):
     except (OSError, subprocess.TimeoutExpired):
         return None
     out = (r.stdout or r.stderr).strip()
-    return out.splitlines()[0] if out else None
+    # The JVM prints "Picked up JAVA_TOOL_OPTIONS: <value>" first; that would echo the unhashed value.
+    lines = [x for x in out.splitlines() if not x.startswith("Picked up ")]
+    return lines[0] if lines else None
 
 
 def _cpuinfo():
@@ -97,9 +103,15 @@ def _git():
     return {"commit": commit, "dirty": bool(run(["git", "status", "--porcelain"]))}
 
 
-def capture():
+def _env_value(name, value, include_flag_values):
+    if name in FREE_FORM_ENV and not include_flag_values:
+        return {"sha256_12": hashlib.sha256(value.encode()).hexdigest()[:12], "length": len(value)}
+    return value
+
+
+def capture(include_flag_values=False):
     checks = run_checks()
-    env = {k: os.environ[k] for k in ENV_ALLOW if k in os.environ}
+    env = {k: _env_value(k, os.environ[k], include_flag_values) for k in ENV_ALLOW if k in os.environ}
     return {
         "schema": formats.SCHEMA_ENV,
         "tool": formats.tool(),

@@ -29,12 +29,10 @@ def leaked(obj):
     return [p for p in PLANTED if p in text]
 
 
-@pytest.mark.xfail(strict=True, reason="spec privacy-env-hash-default: remove this marker when implemented")
 def test_capture_does_not_leak_planted_values(planted_env):
     assert leaked(capture()) == []
 
 
-@pytest.mark.xfail(strict=True, reason="spec privacy-env-hash-default: remove this marker when implemented")
 def test_free_form_vars_are_recorded_as_hash_and_length(planted_env):
     sel = capture()["env"]["selected"]
     for k, v in FREE_FORM.items():
@@ -43,7 +41,6 @@ def test_free_form_vars_are_recorded_as_hash_and_length(planted_env):
         assert len(sel[k]["sha256_12"]) == 12
 
 
-@pytest.mark.xfail(strict=True, reason="spec privacy-env-hash-default: remove this marker when implemented")
 def test_hash_distinguishes_different_flags(planted_env, monkeypatch):
     a = capture()["env"]["selected"]["CFLAGS"]
     monkeypatch.setenv("CFLAGS", "-O3 -I/home/planteduser/include")
@@ -55,14 +52,12 @@ def test_numeric_vars_stay_verbatim(planted_env):
     assert capture()["env"]["selected"]["OMP_NUM_THREADS"] == "4"
 
 
-@pytest.mark.xfail(strict=True, reason="spec privacy-env-hash-default: remove this marker when implemented")
 def test_opt_in_records_flag_values_verbatim(planted_env):
     sel = capture(include_flag_values=True)["env"]["selected"]
     for k, v in FREE_FORM.items():
         assert sel[k] == v
 
 
-@pytest.mark.xfail(strict=True, reason="spec privacy-env-hash-default: remove this marker when implemented")
 def test_ab_env_record_does_not_leak(planted_env):
     _, env = run_ab(f"{sys.executable} -c 'pass'", runs=1, warmup=0, seed=1)
     assert leaked(env) == []
