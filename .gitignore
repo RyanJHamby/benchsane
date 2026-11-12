@@ -12,3 +12,8 @@ build/
 htmlcov/
 .DS_Store
 bench/runs/
+# added by agent-kit template
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
