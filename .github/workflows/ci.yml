@@ -11,13 +11,19 @@ concurrency:
   cancel-in-progress: true
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
+    # CI_RUNNER (repo variable) moves the Linux jobs to another runner label with no other change; macOS stays hosted.
+    runs-on: ${{ matrix.os == 'ubuntu-latest' && (vars.CI_RUNNER || 'ubuntu-latest') || matrix.os }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # Full Python matrix on Linux; macOS on one version only. macOS minutes cost ~10x Linux, and five macOS jobs per
+        # PR were ~84% of the October-November Actions bill. Job names are unchanged ("test (ubuntu-latest, 3.10)" ...).
+        os: [ubuntu-latest]
         python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - os: macos-latest
+            python: "3.13"
     steps:
       # Pinned to full commit SHAs (tags are mutable); Dependabot proposes SHA bumps.
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -36,7 +42,7 @@ jobs:
           [ "$code" -le 1 ] || { echo "doctor crashed (exit $code)"; exit 1; }
           python -c "import json; json.load(open('doctor.json'))"
   package:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.CI_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
