@@ -1,0 +1,23 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "dev.ryanjhamby/benchsane",
+  "title": "benchsane",
+  "description": "Read-only benchmark checks for agents: machine fitness, env capture, sound A/B, 110+ cards.",
+  "repository": {
+    "url": "https://github.com/RyanJHamby/benchsane",
+    "source": "github"
+  },
+  "websiteUrl": "https://ryanjhamby.dev/",
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "benchsane",
+      "version": "0.1.0",
+      "runtimeHint": "uvx",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

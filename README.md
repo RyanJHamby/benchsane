@@ -1,5 +1,7 @@
 # benchsane
 
+<!-- mcp-name: dev.ryanjhamby/benchsane -->
+
 **Your benchmark might be lying to you. Find out before you publish the number.**
 
 ```console
